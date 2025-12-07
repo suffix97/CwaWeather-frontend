@@ -140,7 +140,7 @@ body {
   display: flex;
   flex-wrap: wrap;
   justify-content: flex-start;
-  gap: 15px;
+  gap: 10px;
   background: rgba(51, 102, 153, 0.15);
   padding: 15px;
   border-radius: 12px;
@@ -173,7 +173,7 @@ body {
 .city-select-group {
   display: flex;
   align-items: center;
-  gap: 5px;
+  gap: 4px;
 }
 
 .city-select-label {
