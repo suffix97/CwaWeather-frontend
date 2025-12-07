@@ -1,0 +1,520 @@
+/* * ==========================================
+         * [CSS 插槽] 全域變數與重置
+         * ==========================================
+         */
+:root {
+  /* LCARS Colors */
+  --lcars-orange: #ff9933;
+  --lcars-blue: #336699;
+  --lcars-bg: #050505;
+  --lcars-panel-bg: #000000;
+  --lcars-text-main: #ff9933;
+  --lcars-text-sub: #336699;
+  --lcars-white: #eeeeee;
+
+  /* Dimensions */
+  --radius-main: 20px;
+  --radius-capsule: 50px;
+  --spacing-md: 16px;
+  --spacing-lg: 24px;
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  background-color: var(--lcars-bg);
+  font-family: "Helvetica Neue", Arial, "Heiti TC", "Microsoft JhengHei",
+    sans-serif;
+  color: var(--lcars-white);
+  min-height: 100vh;
+  padding: var(--spacing-md);
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+}
+
+/* * ==========================================
+         * [CSS 插槽] RWD 核心佈局 (Grid System)
+         * ==========================================
+         */
+.app-container {
+  width: 100%;
+  max-width: 1200px;
+  margin: 0 auto;
+
+  display: grid;
+  gap: var(--spacing-md);
+
+  /* 手機版 (預設)：單欄佈局 */
+  grid-template-columns: 1fr;
+  grid-template-areas:
+    "header"
+    "weather"
+    "forecast"
+    "footer";
+}
+
+@media (min-width: 768px) {
+  .app-container {
+    /* 平板以上：改為雙欄佈局 */
+    grid-template-columns: 1fr 1fr;
+    grid-template-rows: auto 1fr auto;
+    grid-template-areas:
+      "header header"
+      "weather forecast"
+      "footer footer";
+
+    min-height: 80vh;
+  }
+
+  /* ⭐ RWD 調整：電腦版大圖示 ⭐ */
+  .weather-icon-emoji {
+    font-size: 7rem !important; /* 增大尺寸 */
+  }
+}
+
+/* * ==========================================
+         * [CSS 插槽] 各區域指定 Grid Area
+         * ==========================================
+         */
+.nav-header {
+  grid-area: header;
+}
+.weather-main-card {
+  grid-area: weather;
+}
+.forecast-container {
+  grid-area: forecast;
+}
+.bottom-status-bar {
+  grid-area: footer;
+}
+
+/* * ==========================================
+         * [CSS 插槽] 元件樣式細節
+         * ==========================================
+         */
+
+/* 通用 LCARS 外框 */
+.lcars-box {
+  background: var(--lcars-panel-bg);
+  border: 2px solid var(--lcars-blue);
+  border-radius: var(--radius-main);
+  padding: var(--spacing-lg);
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+/* --- 1. 頂部導覽列 (City Selector styles unchanged) --- */
+.nav-header {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+
+.lcars-bar-top {
+  display: flex;
+  height: 16px;
+  width: 100%;
+}
+.bar-segment-orange {
+  width: 60%;
+  background-color: var(--lcars-orange);
+  border-top-left-radius: 10px;
+  border-bottom-left-radius: 10px;
+}
+.bar-segment-blue {
+  width: 40%;
+  background-color: var(--lcars-blue);
+  border-top-right-radius: 10px;
+  border-bottom-right-radius: 10px;
+  border-left: 6px solid var(--lcars-bg);
+}
+
+.city-selector {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: flex-start;
+  gap: 15px;
+  background: rgba(51, 102, 153, 0.15);
+  padding: 15px;
+  border-radius: 12px;
+  border: 1px solid var(--lcars-blue);
+}
+
+.city-btn {
+  background: transparent;
+  border: 1px solid var(--lcars-blue);
+  color: var(--lcars-blue);
+  font-size: 1.1rem;
+  padding: 8px 20px;
+  border-radius: 20px;
+  cursor: pointer;
+  font-weight: bold;
+  transition: all 0.3s ease;
+  white-space: nowrap;
+}
+
+.city-btn:hover {
+  background: rgba(51, 102, 153, 0.3);
+}
+
+.city-btn.active {
+  background-color: var(--lcars-orange);
+  border-color: var(--lcars-orange);
+  color: #000;
+}
+
+.city-select-group {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+
+.city-select-label {
+  color: var(--lcars-text-sub);
+  font-size: 0.9rem;
+  white-space: nowrap;
+}
+
+.city-select {
+  background-color: var(--lcars-panel-bg);
+  color: var(--lcars-orange);
+  border: 1px solid var(--lcars-orange);
+  padding: 8px 10px;
+  border-radius: 20px;
+  font-size: 1.1rem;
+  appearance: none;
+  cursor: pointer;
+  outline: none;
+  line-height: 1;
+}
+
+.city-select:focus {
+  box-shadow: 0 0 5px var(--lcars-orange);
+}
+
+.city-select option {
+  background-color: var(--lcars-bg);
+  color: var(--lcars-white);
+}
+
+/* --- 2. 目前天氣卡片 (新增舒適度樣式) --- */
+.weather-main-card {
+  flex-direction: row;
+  justify-content: space-around;
+  align-items: center;
+  min-height: 250px;
+}
+
+.main-info {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+
+.weather-status-text {
+  color: var(--lcars-orange);
+  font-size: 3.5rem;
+  font-weight: bold;
+  line-height: 1.2;
+}
+
+/* ⭐ 舒適度樣式 ⭐ */
+.comfort-level {
+  color: var(--lcars-text-sub); /* 輔助色 */
+  font-size: 1.5rem;
+  font-weight: bold;
+  border-left: 5px solid var(--lcars-orange);
+  padding-left: 10px;
+  margin-top: 5px;
+}
+
+.temp-and-pop-container {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.weather-temp-big,
+.weather-pop-big {
+  font-weight: bold;
+  line-height: 1;
+}
+
+.weather-temp-big {
+  color: var(--lcars-white);
+  font-size: 5rem;
+  text-shadow: 0 0 10px rgba(255, 153, 51, 0.3);
+}
+
+.temp-unit {
+  font-size: 2.5rem;
+  vertical-align: super;
+}
+
+.weather-pop-big {
+  color: #55aaff;
+  font-size: 2.5rem;
+}
+
+.pop-label {
+  font-size: 1.5rem;
+  margin-right: 5px;
+}
+.pop-unit {
+  font-size: 1.5rem;
+}
+
+/* --- 天氣圖示區塊 --- */
+.weather-icon-large {
+  width: 120px;
+  height: 120px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.weather-icon-emoji {
+  font-size: 5rem;
+  line-height: 1;
+  filter: drop-shadow(0 0 10px rgba(255, 255, 0, 0.4));
+}
+
+/* --- 3. 未來預報  --- */
+.forecast-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 15px;
+  width: 100%;
+  height: 100%;
+  align-items: center;
+}
+
+.forecast-item {
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: 15px;
+  padding: 15px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+  transition: transform 0.2s;
+}
+
+.forecast-item:hover {
+  transform: translateY(-5px);
+  background: rgba(255, 255, 255, 0.1);
+}
+
+.forecast-time {
+  color: var(--lcars-blue);
+  font-size: 1rem;
+  margin-bottom: 10px;
+  font-weight: bold;
+  font-size: 0.9rem;
+}
+
+.forecast-icon-placeholder {
+  font-size: 2.5rem;
+  margin: 5px 0;
+}
+
+.forecast-temp {
+  color: #88ccff;
+  font-size: 1.4rem; /* 4欄下縮小溫度 */
+  font-weight: bold;
+  margin-bottom: 5px;
+}
+
+.forecast-pop {
+  color: #55aaff;
+  font-size: 1rem; /* 4欄下縮小降雨機率 */
+  font-weight: bold;
+}
+
+/* --- 4. 底部資訊列 (Styles are unchanged) --- */
+.bottom-status-bar {
+  display: flex;
+  height: 70px;
+  margin-top: auto;
+}
+
+.status-left {
+  flex: 1;
+  background: linear-gradient(
+    90deg,
+    var(--lcars-orange) 20px,
+    transparent 20px
+  );
+  border: 2px solid var(--lcars-orange);
+  border-right: none;
+  border-top-left-radius: var(--radius-capsule);
+  border-bottom-left-radius: var(--radius-capsule);
+  display: flex;
+  align-items: center;
+  padding-left: 35px;
+  font-size: 1.4rem;
+  letter-spacing: 1px;
+}
+
+.status-right {
+  flex: 0 0 200px;
+  border: 2px solid var(--lcars-blue);
+  border-left: none;
+  border-top-right-radius: var(--radius-capsule);
+  border-bottom-right-radius: var(--radius-capsule);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--lcars-orange);
+  font-size: 2.5rem;
+  font-weight: bold;
+  background: rgba(0, 0, 0, 0.6);
+}
+
+.status-text {
+  color: #88ccff;
+}
+
+/* * ==========================================
+         * [CSS 插槽] 手機尺寸優化 (Mobile Only Override)
+         * ==========================================
+         */
+@media (max-width: 767px) {
+  .weather-main-card {
+    flex-direction: column;
+    text-align: center;
+    gap: 20px;
+  }
+  .main-info {
+    text-align: center;
+    align-items: center;
+  }
+
+  /* 手機版預報 Grid 保持 3 欄或 2 欄會比較好，這裡維持 2 欄 */
+  .forecast-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+  .forecast-time {
+    font-size: 1rem;
+  }
+  .forecast-icon-placeholder {
+    font-size: 3rem;
+  }
+  .forecast-temp {
+    font-size: 1.8rem;
+  }
+  .forecast-pop {
+    font-size: 1.1rem;
+  }
+
+  .city-selector {
+    flex-wrap: wrap;
+    justify-content: flex-start;
+  }
+
+  .city-btn {
+    padding: 6px 12px;
+    font-size: 0.9rem;
+  }
+
+  .status-right {
+    flex: 0 0 140px;
+    font-size: 2rem;
+  }
+  .status-left {
+    font-size: 1rem;
+  }
+
+  .weather-temp-big {
+    font-size: 4rem;
+  }
+  .weather-pop-big {
+    font-size: 2rem;
+  }
+
+  .weather-icon-emoji {
+    font-size: 4rem;
+  }
+
+  .comfort-level {
+    font-size: 1.2rem;
+  } /* 手機上縮小舒適度文字 */
+}
+
+/* 時間格式 */
+
+.time-display {
+  font-size: clamp(1rem, 5vw, 1.7rem); /* 字體大小 */
+  font-weight: bold; /* 粗體 */
+  color: #ff9933; /* 字體顏色 */
+  text-align: center; /* 置中 */
+  /* margin-top: 20px; */
+}
+
+/* loading 畫面用 */
+
+.loading-window {
+  background: #1a1f26;
+  border: 3px solid #ff9966;
+  border-radius: 20px;
+  width: 300px;
+  padding: 16px;
+  margin: 40px auto; /* 讓它置中顯示 */
+  color: #fff;
+  font-family: Arial, sans-serif;
+}
+
+.loading-title {
+  color: #ff9966;
+  font-weight: bold;
+  text-transform: uppercase;
+  font-size: 14px;
+  margin-bottom: 12px;
+  text-align: center;
+  letter-spacing: 0.1em;
+}
+
+.loading-bar {
+  height: 18px;
+  border-radius: 999px;
+  margin: 6px 0;
+  overflow: hidden;
+  background: #333;
+  position: relative;
+}
+
+.loading-fill {
+  position: absolute;
+  inset: 0;
+  background: #66ccff;
+  transform: translateX(-100%);
+  animation: loading-sweep 2s infinite;
+}
+
+@keyframes loading-sweep {
+  0% {
+    transform: translateX(-100%);
+  }
+  50% {
+    transform: translateX(0%);
+  }
+  100% {
+    transform: translateX(100%);
+  }
+}
+
+.loading-status {
+  margin-top: 10px;
+  text-align: center;
+  font-size: 12px;
+  color: #ffd27f;
+  letter-spacing: 0.1em;
+}
